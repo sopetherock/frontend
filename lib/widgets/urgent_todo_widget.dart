@@ -60,13 +60,13 @@ class _UrgentTodoWidgetState extends State<UrgentTodoWidget> {
   // 남은 시간에 따라 HEX 코드로 배경 색상 결정
   Color _getBackgroundColor(Duration remaining) {
     if (remaining.isNegative || remaining.inMinutes <= 0) {
-      return const Color(0xFF6C757D); // 지남: Grayish Blue (Colors.grey.shade600 대체)
+      return const Color(0xFF6C757D); // 지남
     } else if (remaining.inHours < 1) {
-      return const Color(0xFF0D1C5D); // 1시간 미만: Red (Colors.redAccent.shade700 대체)
+      return const Color(0xFF0D1C5D); // 1시간 미만
     } else if (remaining.inHours < 3) {
-      return const Color(0xFFFE4B80); // 3시간 미만: Yellow/Orange (Colors.deepOrange 대체)
+      return const Color(0xFFFE4B80); // 3시간 미만
     } else {
-      return const Color(0xFFFFE65B); // 3시간 이상: Purple (Colors.pink.shade400 대체)
+      return const Color(0xFFFFE65B); // 3시간 이상
     }
   }
 

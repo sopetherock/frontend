@@ -41,7 +41,8 @@ dependencies:
   firebase_core: ^2.27.0        # Firebase 코어 (필수)
   firebase_messaging: ^14.8.0   # FCM 메시징 (필수)
   flutter_local_notifications: ^17.1.2 # 로컬 알림 처리 (앱 포그라운드 시 알림 표시용)
-  # firebase_auth: ^4.17.9        # 인증 토큰 획득 시 필요
+  firebase_auth: ^4.17.9        # 인증 토큰 획득 시 필요
+  http: ^1.1.2                    # HTTP 클라이언트 (ApiService 사용)
 
 dev_dependencies:
   flutter_test:
