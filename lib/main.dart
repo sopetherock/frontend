@@ -1,9 +1,8 @@
-// lib/main.dart
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'app/app.dart';
+
+import 'app/app.dart'; // 자동 라우팅(AppRoot)
 import 'services/api_service.dart';
 
 void main() async {
@@ -13,7 +12,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  ApiService.init();
+  ApiService.init(); // 🔥 중요한 부분
 
   runApp(const ZeusOnApp());
 }
@@ -26,10 +25,10 @@ class ZeusOnApp extends StatelessWidget {
     return MaterialApp(
       title: 'Zeus On',
       theme: ThemeData(
-        fontFamily: 'Pretendard',
+        fontFamily: "Pretendard",
         useMaterial3: true,
       ),
-      home: const AppRoot(),
+      home: const AppRoot(), // 🔥 앱 시작 화면
     );
   }
 }
