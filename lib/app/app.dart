@@ -1,7 +1,7 @@
 // lib/app/app.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:frontend/screens/timer/personal_timer_screen.dart';
 import 'package:frontend/screens/auth/login_choice_screen.dart';
 import 'package:frontend/screens/social/friends_screen.dart';
 
@@ -22,7 +22,7 @@ class AppRoot extends StatelessWidget {
         final user = snapshot.data;
 
         if (user != null && user.emailVerified) {
-          return const FriendsScreen(); // 자동 로그인
+          return PersonalTimerScreen(); // 자동 로그인
         }
 
         return const LoginChoiceScreen(); // 로그인/회원가입 화면

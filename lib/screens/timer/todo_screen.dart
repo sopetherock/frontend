@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // 숫자 입력 제한용
+import 'package:flutter/cupertino.dart'; // iOS 스타일 피커용
+import '../../services/timer_service.dart';
 import '../../widgets/timer_display.dart';
-import '../../services/timer_service.dart'; // 서비스 임포트
 
 class TodoScreen extends StatefulWidget {
   const TodoScreen({super.key});
@@ -11,30 +11,59 @@ class TodoScreen extends StatefulWidget {
 }
 
 class _TodoScreenState extends State<TodoScreen> {
-  final TimerService _timerService = TimerService(); // 서비스 인스턴스
-  
-  // 입력 컨트롤러
+  final TimerService _timerService = TimerService();
   final TextEditingController _todoController = TextEditingController();
-  final TextEditingController _durationController = TextEditingController();
+
+  // [변경] 마감 시간을 저장할 변수 (기본값: 현재시간 + 1시간)
+  DateTime _selectedDeadline = DateTime.now().add(const Duration(hours: 1));
 
   bool isSubmitting = false;
-
-  // 색상 상수
   final Color _iconYellow = const Color(0xFFFFED86);
   final Color _buttonPink = const Color(0xFFFE4B80);
 
   @override
   void dispose() {
     _todoController.dispose();
-    _durationController.dispose();
     super.dispose();
   }
 
-  // [Logic] 타이머 생성 요청
+  // 날짜/시간 선택 팝업 (CupertinoDatePicker 사용)
+  void _showDatePicker() {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext builder) {
+        return Container(
+          height: 250,
+          color: Colors.white,
+          child: CupertinoDatePicker(
+            mode: CupertinoDatePickerMode.dateAndTime, // 날짜 + 시간 모드
+            initialDateTime: _selectedDeadline,
+            minimumDate: DateTime.now(), // 과거 날짜 선택 방지
+            use24hFormat: false, // 오전/오후 표시
+            onDateTimeChanged: (DateTime newDateTime) {
+              setState(() {
+                _selectedDeadline = newDateTime;
+              });
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  // 타이머 생성 요청
   Future<void> _handleCreateTimer() async {
-    if (_todoController.text.isEmpty || _durationController.text.isEmpty) {
+    if (_todoController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('할 일과 시간을 모두 입력해주세요.')),
+        const SnackBar(content: Text('할 일을 입력해주세요.')),
+      );
+      return;
+    }
+
+    // 과거 시간 체크
+    if (_selectedDeadline.isBefore(DateTime.now())) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('마감 시간은 미래여야 합니다.')),
       );
       return;
     }
@@ -42,38 +71,42 @@ class _TodoScreenState extends State<TodoScreen> {
     setState(() => isSubmitting = true);
 
     try {
-      // 데이터 가공
-      int minutes = int.parse(_durationController.text);
-      int durationInSeconds = minutes * 60;
-
-      // 서비스 호출
+      // [변경] _selectedDeadline을 그대로 서버로 전송
       final newTimer = await _timerService.createPersonalTimer(
         todo: _todoController.text,
-        durationInSeconds: durationInSeconds,
+        deadline: _selectedDeadline,
       );
 
       if (!mounted) return;
 
-      // 성공 시 타이머 디스플레이 화면으로 이동
+      // 생성된 타이머 데이터를 가지고 화면 이동
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => TimerDisplayScreen(
             todoId: newTimer['id'],
             todo: newTimer['todo'],
-            duration: newTimer['duration'],
+            // 남은 시간(초) 계산해서 전달
+            duration: _selectedDeadline.difference(DateTime.now()).inSeconds,
+            deadline: _selectedDeadline, // 마감 시간 전달
             isGroup: false,
           ),
         ),
       );
     } catch (e) {
+      print(e);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('타이머 생성에 실패했습니다. 다시 시도해주세요.')),
+        const SnackBar(content: Text('생성 실패. 로그아웃 후 다시 시도해주세요.')),
       );
     } finally {
       if (mounted) setState(() => isSubmitting = false);
     }
+  }
+
+  // 날짜 포맷팅 헬퍼 함수 (예: 11월 20일 14:30)
+  String _formatDeadline(DateTime dt) {
+    return "${dt.month}월 ${dt.day}일 ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}";
   }
 
   @override
@@ -82,132 +115,123 @@ class _TodoScreenState extends State<TodoScreen> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // 1. 상단 뒤로가기 버튼
-          _buildBackButton(context),
-
-          // 2. 중앙 아이콘 (노란색 원)
-          _buildCentralIcon(),
-
-          // 3. 타이틀
-          _buildTitle(),
-
-          // 4. 입력 필드 1 (Todo)
-          _buildTodoInput(),
-
-          // 5. 입력 필드 2 (Duration)
-          _buildDurationInput(),
-
-          // 6. 하단 버튼 (할 일 추가하기)
-          _buildSubmitButton(),
-        ],
-      ),
-    );
-  }
-
-  // --- UI 위젯 메서드들 ---
-
-  Widget _buildBackButton(BuildContext context) {
-    return Positioned(
-      top: 61, left: 16,
-      child: GestureDetector(
-        onTap: () => Navigator.pop(context),
-        child: const Icon(Icons.arrow_back_ios_new, size: 24, color: Colors.black),
-      ),
-    );
-  }
-
-  Widget _buildCentralIcon() {
-    return Positioned(
-      top: 84, left: 146, // (393 - 102) / 2 = 145.5
-      child: Container(
-        width: 102, height: 102,
-        decoration: BoxDecoration(color: _iconYellow, shape: BoxShape.circle),
-        child: const Center(
-          child: Icon(Icons.edit_note, size: 40, color: Colors.black),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTitle() {
-    return Positioned(
-      top: 216, left: 0, right: 0,
-      child: const Center(
-        child: Text(
-          '할 일 추가',
-          style: TextStyle(fontFamily: 'Inter', fontSize: 18, fontWeight: FontWeight.w400, color: Colors.black),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTodoInput() {
-    return Positioned(
-      top: 300, left: 23, right: 23,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text("어떤 일을 하시겠어요?", style: TextStyle(color: Colors.grey)),
-          TextField(
-            controller: _todoController,
-            decoration: const InputDecoration(
-              hintText: '예: 수학 3단원 벼락치기',
-              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0x5F000000))),
-              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-              contentPadding: EdgeInsets.symmetric(vertical: 10),
+          // 1. 뒤로가기
+          Positioned(
+            top: 61,
+            left: 16,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: const Icon(Icons.arrow_back_ios_new, size: 24, color: Colors.black),
             ),
-            style: const TextStyle(fontSize: 18),
           ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildDurationInput() {
-    return Positioned(
-      top: 400, left: 23, right: 23,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text("목표 시간은 얼마인가요? (분)", style: TextStyle(color: Colors.grey)),
-          TextField(
-            controller: _durationController,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: const InputDecoration(
-              hintText: '예: 30', suffixText: '분',
-              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0x5F000000))),
-              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-              contentPadding: EdgeInsets.symmetric(vertical: 10),
-            ),
-            style: const TextStyle(fontSize: 18),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSubmitButton() {
-    return Positioned(
-      top: 703, left: 23, width: 347, height: 49,
-      child: GestureDetector(
-        onTap: isSubmitting ? null : _handleCreateTimer,
-        child: Container(
-          decoration: BoxDecoration(
-            color: _buttonPink,
-            borderRadius: BorderRadius.circular(5),
-          ),
-          alignment: Alignment.center,
-          child: isSubmitting
-              ? const SizedBox(
-                  width: 20, height: 20,
-                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                )
-              : const Text(
-                  '할 일 추가하기',
-                  style: TextStyle(fontFamily: 'Inter', fontSize: 15, fontWeight: FontWeight.w400, color: Colors.white),
+          // 2. 아이콘 & 타이틀
+          Positioned(
+            top: 84,
+            left: 0,
+            right: 0,
+            child: Column(
+              children: [
+                Container(
+                  width: 102,
+                  height: 102,
+                  decoration: BoxDecoration(color: _iconYellow, shape: BoxShape.circle),
+                  child: const Center(child: Icon(Icons.edit_note, size: 40, color: Colors.black)),
                 ),
-        ),
+                const SizedBox(height: 30),
+                const Text(
+                  '할 일 추가',
+                  style: TextStyle(fontFamily: 'Inter', fontSize: 18, fontWeight: FontWeight.w400),
+                ),
+              ],
+            ),
+          ),
+
+          // 3. 입력 폼 (할일 + 마감시간)
+          Positioned(
+            top: 300,
+            left: 23,
+            right: 23,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 할 일 입력
+                const Text("어떤 일을 하시겠어요?", style: TextStyle(color: Colors.grey)),
+                TextField(
+                  controller: _todoController,
+                  decoration: const InputDecoration(
+                    hintText: '예: 수학 3단원 벼락치기',
+                    contentPadding: EdgeInsets.symmetric(vertical: 10),
+                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black12)),
+                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                  ),
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const SizedBox(height: 40),
+
+                // 마감 시간 선택 (버튼 형태)
+                const Text("언제까지 끝내실 건가요? (마감기한)", style: TextStyle(color: Colors.grey)),
+                const SizedBox(height: 10),
+                GestureDetector(
+                  onTap: _showDatePicker, // 다이얼 띄우기
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    decoration: const BoxDecoration(
+                      border: Border(bottom: BorderSide(color: Colors.black)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // 선택된 날짜 표시
+                        Text(
+                          _formatDeadline(_selectedDeadline),
+                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        const Text(
+                          "설정하기 >",
+                          style: TextStyle(color: Colors.blue, fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // 4. 완료 버튼
+          Positioned(
+            bottom: 50, // 하단 여백
+            left: 23,
+            right: 23,
+            height: 49,
+            child: GestureDetector(
+              onTap: isSubmitting ? null : _handleCreateTimer,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: _buttonPink,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                alignment: Alignment.center,
+                child: isSubmitting
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                      )
+                    : const Text(
+                        '할 일 추가하기',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white,
+                        ),
+                      ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

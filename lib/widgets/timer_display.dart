@@ -31,7 +31,7 @@ class _TimerDisplayScreenState extends State<TimerDisplayScreen> {
   late Timer _timer;
   late int _remainingSeconds;
   late int _totalSeconds;
-  final storage = const FlutterSecureStorage();
+  final storage = FlutterSecureStorage();
 
   // 디자인 컬러 상수
   final Color _primaryPink = const Color(0xFFFE4B80);
