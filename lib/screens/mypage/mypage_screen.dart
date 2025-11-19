@@ -14,120 +14,129 @@ class MyPageScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
+
+      // ✅ 헤더 고정
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(56),
+        child: PinkHeader(title: '마이페이지'),
+      ),
+
+      // ✅ 네비 바 고정
+      bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 3),
+
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // 상단 핑크 헤더
-            PinkHeader(title: '마이페이지'),
-            const SizedBox(height: 32),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 32),
 
-            // 프로필 영역
-            Center(
-              child: Column(
-                children: [
-                  // 노란 원 + 아이콘
-                  Container(
-                    width: 107,
-                    height: 107,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: lightYellow,
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.person_outline,
-                        size: 58,
-                        color: Colors.black,
+                // 프로필 영역
+                Center(
+                  child: Column(
+                    children: [
+                      // 노란 원 + 아이콘
+                      Container(
+                        width: 107,
+                        height: 107,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: lightYellow,
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.person_outline,
+                            size: 58,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    '유준희',
-                    style: TextStyle(
-                      fontSize: 23,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'junheelove',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFFB6B6B6),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // 번개 모으기 카드
-            Center(
-              child: Container(
-                width: 89,
-                height: 70,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                      color: const Color.fromARGB(255, 232, 232, 232),
-                      width: 1.2),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/images/_lighting.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      '번개 모으기',
-                      style: TextStyle(
-                        fontSize: 8,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.black,
+                      const SizedBox(height: 16),
+                      const Text(
+                        '유준희',
+                        style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      const Text(
+                        'junheelove',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFFB6B6B6),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+
+                const SizedBox(height: 24),
+
+                // 번개 모으기 카드
+                Center(
+                  child: Container(
+                    width: 89,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 232, 232, 232),
+                          width: 1.2),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/images/_lighting.png',
+                          width: 24,
+                          height: 24,
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          '번개 모으기',
+                          style: TextStyle(
+                            fontSize: 8,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                // 회색 구분선 1
+                _GreyDivider(color: dividerColor),
+
+                // 알림 섹션
+                const _SectionTitle(title: '알림'),
+                const _SettingRow(title: '앱 알림 설정'),
+
+                _GreyDivider(color: dividerColor),
+
+                // 계정 섹션
+                const _SectionTitle(title: '계정'),
+                const _SettingRow(title: '내 정보'),
+                const _LogoutRow(title: '로그아웃'),
+
+                _GreyDivider(color: dividerColor),
+
+                // 정보 섹션
+                const _SectionTitle(title: '정보'),
+                const _SettingRow(title: '이용 약관'),
+
+                // 하단 네비게이션 영역과 높이 맞추려고 약간 여백
+                const SizedBox(height: 8),
+              ],
             ),
-
-            const SizedBox(height: 24),
-
-            // 회색 구분선 1
-            _GreyDivider(color: dividerColor),
-
-            // 알림 섹션
-            const _SectionTitle(title: '알림'),
-            const _SettingRow(title: '앱 알림 설정'),
-
-            _GreyDivider(color: dividerColor),
-
-            // 계정 섹션
-            const _SectionTitle(title: '계정'),
-            const _SettingRow(title: '내 정보'),
-            const _LogoutRow(title: '로그아웃'),
-
-            _GreyDivider(color: dividerColor),
-
-            // 정보 섹션
-            const _SectionTitle(title: '정보'),
-            const _SettingRow(title: '이용 약관'),
-
-            const Spacer(),
-
-            // 하단 네비게이션 영역과 높이 맞추려고 약간 여백
-            const SizedBox(height: 8),
-
-            const CustomBottomNavigationBar(),
-          ],
+          ),
         ),
       ),
     );
