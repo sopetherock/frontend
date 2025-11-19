@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../splash/splash_screen.dart';
+import '../../widgets/CustomBottomNavigationBar.dart';
+import '../../widgets/header.dart';
 
 class MyPageScreen extends StatelessWidget {
   const MyPageScreen({super.key});
@@ -17,38 +19,7 @@ class MyPageScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // 상단 핑크 헤더
-            Container(
-              height: 70,
-              color: pink,
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 12),
-              child: Stack(
-                children: [
-                  Align(
-                      // 원하는 위치 조정 가능
-                      alignment: Alignment.centerLeft,
-                      child: IconButton(
-                        icon: Icon(Icons.arrow_back_ios),
-                        color: Colors.white,
-                        iconSize: 18,
-                        onPressed: () {
-                          // 버튼 누르면 실행 된다는 뜻
-                          Navigator.pop(context);
-                        },
-                      )),
-                  const Center(
-                    // 항상 정중앙
-                    child: Text(
-                      '마이페이지',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            PinkHeader(title: '마이페이지'),
             const SizedBox(height: 32),
 
             // 프로필 영역
@@ -154,29 +125,10 @@ class MyPageScreen extends StatelessWidget {
 
             // 하단 네비게이션 영역과 높이 맞추려고 약간 여백
             const SizedBox(height: 8),
+
+            const CustomBottomNavigationBar(),
           ],
         ),
-      ),
-
-      // 하단 네비게이션 바
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: pink,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.roofing),
-            label: '홈',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.speed),
-            label: '기록',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_box),
-            label: '마이',
-          ),
-        ],
       ),
     );
   }
