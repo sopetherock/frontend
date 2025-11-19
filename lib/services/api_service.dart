@@ -1,19 +1,30 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ApiService {
-  late Dio _dio;
+  static late Dio dio;
 
-  ApiService() {
-    _dio = Dio(BaseOptions(
-      baseUrl: dotenv.env['BASE_API_URL'] ?? 'http://localhost:3000/api',
-      connectTimeout: const Duration(seconds: 5),
-      receiveTimeout: const Duration(seconds: 3),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    ));
+  static void init() {
+    dio = Dio(
+      BaseOptions(
+        baseUrl: 'http://localhost:3000/api',
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+      ),
+    );
+
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final user = FirebaseAuth.instance.currentUser;
+          if (user != null) {
+            final token = await user.getIdToken();
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+          return handler.next(options);
+        },
+      ),
+    );
   }
-
-  Dio get dio => _dio;
 }

@@ -15,6 +15,7 @@ migrate_working_dir/
 *.ipr
 *.iws
 .idea/
+.vscode/
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
@@ -47,3 +48,23 @@ node_modules/
 
 # Environment variables
 .env
+
+# 🔑 플랫폼별 보안 파일 및 로컬 환경 설정 (절대 커밋 금지)
+###########################################################
+# Android 로컬 설정 (SDK 경로, Gradle 캐시 등)
+/android/local.properties
+/android/.gradle/
+
+# Android 디버그 키스토어 (키 정보 포함)
+/android/key.properties
+
+# iOS 디바이스 연결 정보 및 빌드 아티팩트
+/ios/.symlinks/
+/ios/.flutter-plugins
+/ios/.flutter-plugins-dependencies
+/ios/Flutter/Generated.xcconfig
+
+# ⚠️ [보안] Firebase 설정 파일
+# flutterfire configure로 생성된 Native 설정 파일 (API 키 포함 가능)
+/android/app/google-services.json
+/ios/Runner/GoogleService-Info.plist

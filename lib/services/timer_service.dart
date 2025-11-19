@@ -7,7 +7,7 @@ class TimerService {
 
   Future<Todo?> fetchUrgentTodo() async {
     try {
-      final response = await _apiService.dio.get('/timer/urgent');
+      final response = await ApiService.dio.get('/timer/urgent');
       
       // 응답 예시: { "task": { "title": "과제 제출", "deadline": "..." } }
       final taskData = response.data['task']; 

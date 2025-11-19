@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'screens/auth/login_choice_screen.dart';
+import 'screens/auth/terms_aggreement_screens.dart';
+import 'screens/auth/signup_screen_input_email.dart';
+import 'screens/auth/email_login_screen.dart';
+import 'screens/auth/password_reset_screen.dart';
+import 'screens/splash/splash_screen.dart';
+import 'screens/mypage/mypage_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart'; 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -6,6 +13,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:frontend/services/fcm_service.dart';
 import 'package:frontend/providers/timer_provider.dart';
 import 'package:frontend/widgets/urgent_todo_widget.dart';
+import 'firebase_options.dart'; // <--- 이 파일이 위 config JSON 역할을 대신합니다.
+import 'app/app.dart';
 
 // 로컬 알림 플러그인 인스턴스 생성
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -53,8 +62,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       );
   }
 }
-void main() async{
 
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(); // Firebase Core 초기화
   // 로컬 알림 초기화 및 채널 생성 (android 전용)
@@ -80,8 +89,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      
-      home: const UrgentTodoWidget(),
-    );  
+      home: AppRoot(),
+      debugShowCheckedModeBanner: false,
+    );
   }
 }
