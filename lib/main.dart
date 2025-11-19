@@ -8,6 +8,7 @@ import 'screens/splash/splash_screen.dart';
 import 'screens/mypage/mypage_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // <--- 이 파일이 위 config JSON 역할을 대신합니다.
+import 'app/app.dart';
 
 void main() async {
   // Flutter 바인딩 초기화
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const MyPageScreen(),
+      home: AppRoot(),
       debugShowCheckedModeBanner: false,
     );
   }
