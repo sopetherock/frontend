@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../auth/terms_aggreement_screens.dart';
-import 'email_login_screen.dart';
+import 'email_login_screen_.dart';
 
 const pink = Color(0xFFFE4B80);
 

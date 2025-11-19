@@ -1,13 +1,9 @@
-<<<<<<< HEAD
-import 'package:flutter/material.dart';
-=======
 // lib/screens/auth/signup_screen_input_email.dart
 
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:frontend/services/api_service.dart';
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
 import 'login_choice_screen.dart';
 
 const Color kPink = Color(0xFFFE4B80);
@@ -21,12 +17,9 @@ class SignUpScreen_input_email extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen_input_email> {
   int _step = 1; // 1단계 / 2단계
-<<<<<<< HEAD
-=======
   Timer? _verifyTimer;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
 
   // 1단계 입력값
   final TextEditingController _emailController = TextEditingController();
@@ -37,13 +30,10 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _nicknameController = TextEditingController();
 
-<<<<<<< HEAD
-=======
   // username 중복 확인 상태
   bool _usernameChecked = false;
   bool _usernameAvailable = false;
 
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
   @override
   void dispose() {
     _emailController.dispose();
@@ -51,11 +41,6 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
     _pwCheckController.dispose();
     _idController.dispose();
     _nicknameController.dispose();
-<<<<<<< HEAD
-    super.dispose();
-  }
-
-=======
     _verifyTimer?.cancel();
     super.dispose();
   }
@@ -218,7 +203,6 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
   // ----------------------------------------------------
   // UI
   // ----------------------------------------------------
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -230,76 +214,20 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 8),
-<<<<<<< HEAD
-
-              // 뒤로가기
-=======
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
               IconButton(
                 icon: const Icon(Icons.arrow_back_ios),
                 iconSize: 20,
                 color: Colors.black,
                 onPressed: () {
                   if (_step == 1) {
-<<<<<<< HEAD
-                    Navigator.pop(context); // 제일 처음이면 이전 화면으로
-                  } else {
-                    setState(() {
-                      _step = 1; // 2단계에서 뒤로 누르면 1단계로 돌아가기
-=======
                     Navigator.pop(context);
                   } else {
                     setState(() {
                       _step = 1;
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
                     });
                   }
                 },
               ),
-<<<<<<< HEAD
-
-              const SizedBox(height: 60),
-
-              // 제목: zeus on 가입하기
-              const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'zeus on',
-                        style: TextStyle(
-                          fontFamily: 'Modulus', // pubspec에 등록된 폰트 기준
-                          fontSize: 36,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.04,
-                          height: 37 / 36,
-                          color: kPink,
-                        ),
-                      ),
-                      Text(
-                        '회원가입',
-                        style: TextStyle(
-                          fontFamily: 'Modulus', // pubspec에 등록된 폰트 기준
-                          fontSize: 30,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.04,
-                          height: 37 / 36,
-                          color: Color.fromARGB(255, 0, 0, 0),
-                        ),
-                      ),
-                    ],
-                  )),
-
-              const SizedBox(height: 100),
-
-              // 🔥 여기에서 step에 따라 다른 입력 폼 보여주기
-              if (_step == 1) _buildStep1() else _buildStep2(),
-
-              const SizedBox(height: 80),
-
-              // 버튼도 step에 따라 텍스트/동작 변경
-=======
               const SizedBox(height: 60),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
@@ -334,48 +262,15 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
               const SizedBox(height: 100),
               if (_step == 1) _buildStep1() else _buildStep2(),
               const SizedBox(height: 80),
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
               SizedBox(
                 width: double.infinity,
                 height: 49,
                 child: ElevatedButton(
                   onPressed: () {
                     if (_step == 1) {
-<<<<<<< HEAD
-                      // TODO: 이메일/비번 검증 넣어도 됨
-                      setState(() {
-                        _step = 2;
-                      });
-                    } else {
-                      // TODO: 여기서 최종 회원가입 처리
-                      // 예시로 팝업만 띄움
-                      showDialog(
-                        context: context,
-                        builder: (_) {
-                          return AlertDialog(
-                            title: const Text('회원가입 완료'),
-                            content: const Text('회원가입이 완료되었습니다.'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context); // 팝업 닫기
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) =>
-                                              const LoginChoiceScreen())); // 회원가입 화면 닫기
-                                },
-                                child: const Text('확인'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-=======
                       _createFirebaseAccount();
                     } else {
                       _registerToBackend();
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -396,10 +291,6 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
                   ),
                 ),
               ),
-<<<<<<< HEAD
-
-=======
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
               const SizedBox(height: 24),
             ],
           ),
@@ -408,11 +299,7 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
     );
   }
 
-<<<<<<< HEAD
-  /// 1단계: 이메일 + 비밀번호
-=======
   /// 1단계 UI
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
   Widget _buildStep1() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -426,26 +313,7 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
             color: Color(0xFF666666),
           ),
         ),
-<<<<<<< HEAD
-        TextField(
-          controller: _emailController,
-          decoration: const InputDecoration(
-            isDense: true,
-            contentPadding: EdgeInsets.only(top: 8, bottom: 4),
-            border: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFD9D9D9)),
-            ),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFD9D9D9)),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: kPink),
-            ),
-          ),
-        ),
-=======
         _underlineTextField(_emailController),
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
         const SizedBox(height: 30),
         const Text(
           '비밀번호 입력',
@@ -456,27 +324,7 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
             color: Color(0xFF666666),
           ),
         ),
-<<<<<<< HEAD
-        TextField(
-          controller: _pwController,
-          obscureText: true,
-          decoration: const InputDecoration(
-            isDense: true,
-            contentPadding: EdgeInsets.only(top: 8, bottom: 4),
-            border: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFD9D9D9)),
-            ),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFD9D9D9)),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: kPink),
-            ),
-          ),
-        ),
-=======
         _underlineTextField(_pwController, obscure: true),
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
         const SizedBox(height: 30),
         const Text(
           '비밀번호 확인',
@@ -487,44 +335,16 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
             color: Color(0xFF666666),
           ),
         ),
-<<<<<<< HEAD
-        TextField(
-          controller: _pwCheckController,
-          obscureText: true,
-          decoration: const InputDecoration(
-            isDense: true,
-            contentPadding: EdgeInsets.only(top: 8, bottom: 4),
-            border: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFD9D9D9)),
-            ),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFD9D9D9)),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: kPink),
-            ),
-          ),
-        ),
-=======
         _underlineTextField(_pwCheckController, obscure: true),
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
       ],
     );
   }
 
-<<<<<<< HEAD
-  /// 2단계: 아이디 + 닉네임
-=======
   /// 2단계 UI
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
   Widget _buildStep2() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-<<<<<<< HEAD
-        // 아이디 입력 + 중복확인
-=======
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
         Row(
           children: [
             const Text(
@@ -538,13 +358,7 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
             ),
             const Spacer(),
             TextButton(
-<<<<<<< HEAD
-              onPressed: () {
-                // TODO: 중복확인
-              },
-=======
               onPressed: _checkUsernameDuplicate,
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 minimumSize: const Size(0, 0),
@@ -562,30 +376,8 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
             ),
           ],
         ),
-<<<<<<< HEAD
-        TextField(
-          controller: _idController,
-          decoration: const InputDecoration(
-            isDense: true,
-            contentPadding: EdgeInsets.only(top: 8, bottom: 4),
-            border: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFD9D9D9)),
-            ),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFD9D9D9)),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: kPink),
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 32),
-
-=======
         _underlineTextField(_idController),
         const SizedBox(height: 32),
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
         const Text(
           '닉네임 입력',
           style: TextStyle(
@@ -595,27 +387,6 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
             color: Color(0xFF666666),
           ),
         ),
-<<<<<<< HEAD
-        TextField(
-          controller: _nicknameController,
-          decoration: const InputDecoration(
-            isDense: true,
-            contentPadding: EdgeInsets.only(top: 8, bottom: 4),
-            border: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFD9D9D9)),
-            ),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFD9D9D9)),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: kPink),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-=======
         _underlineTextField(_nicknameController),
       ],
     );
@@ -640,5 +411,4 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
       ),
     );
   }
->>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
 }
