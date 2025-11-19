@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264
 import 'package:flutter/material.dart';
 import 'login_choice_screen.dart';
 import 'signup_screen_input_email.dart';
@@ -211,6 +214,7 @@ class SignUpChoiceScreen extends StatelessWidget {
     );
   }
 }
+<<<<<<< HEAD
 =======
 // lib/screens/auth/signup_screen.dart (일부)
 
@@ -234,3 +238,5 @@ void _handleSignUp() async {
   }
 }
 >>>>>>> 2cec733a4da274132cb52576bbd2e743cf15fc66
+=======
+>>>>>>> 88b4e47a19aa3edd21cfa882f093bb8d78a70264

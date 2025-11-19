@@ -14,14 +14,13 @@ class AuthService {
 
   // 1. 회원가입 및 인증 메일 발송 로직 통합
   Future<void> signUpAndSendVerification({
-    required String email, 
+    required String email,
     required String password,
   }) async {
     final userCredential = await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
-    
     // 유저 생성 후 분리된 함수를 호출하여 인증 메일 발송
     await _sendVerificationEmail(userCredential.user);
   }
@@ -30,13 +29,13 @@ class AuthService {
   Future<bool> reloadUserAndCheckVerified() async {
     final user = _auth.currentUser;
     if (user == null) return false;
-    
+
     await user.reload(); // 최신 상태 갱신 (핵심!)
     final updatedUser = _auth.currentUser;
-    
+
     return updatedUser?.emailVerified ?? false;
   }
-  
+
   // ⭐️ 3. [추가] 비밀번호 재설정 메일 발송 로직
   // 비밀번호를 잊었을 때 사용합니다.
   Future<void> sendPasswordResetEmail({required String email}) async {
