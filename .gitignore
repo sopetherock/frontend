@@ -43,8 +43,11 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-#패키지
+# 패키지
 node_modules/
+
+# Environment variables
+.env
 
 # 🔑 플랫폼별 보안 파일 및 로컬 환경 설정 (절대 커밋 금지)
 ###########################################################

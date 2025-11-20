@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:frontend/screens/social/friends_screen.dart';
+import 'package:frontend/services/api_service.dart';
 import 'password_reset_screen.dart';
 
 const pink = Color(0xFFFE4B80);
@@ -41,6 +42,8 @@ class EmailLoginScreen extends StatelessWidget {
         return;
       }
 
+      final token = await user.getIdToken(true);
+      await ApiService.setToken(token!);
       // ✅ 로그인 성공 → 친구 화면으로 이동
       Navigator.pushReplacement(
         context,
