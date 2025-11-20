@@ -21,9 +21,14 @@ import 'services/fcm_service.dart';
 import 'providers/timer_provider.dart';
 import 'widgets/urgent_todo_widget.dart';
 
+// [필수] 라우트 변화를 감지할 전역 Observer 객체
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 // 로컬 알림 플러그인 인스턴스 생성
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
+
+
 
 // 알림 채널 정의
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -95,6 +100,7 @@ class ZeusOnApp extends StatelessWidget {
         fontFamily: "Pretendard",
         useMaterial3: true,
       ),
+      navigatorObservers: [routeObserver],
       home: const AppRoot(), // 앱 시작 화면
     );
   }

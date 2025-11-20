@@ -1,9 +1,7 @@
-// lib/screens/auth/signup_screen_input_email.dart
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:frontend/services/api_service.dart';
+import 'package:frontend/services/api_service.dart'; // [확인] ApiService 임포트
 import 'login_choice_screen.dart';
 
 const Color kPink = Color(0xFFFE4B80);
@@ -116,7 +114,11 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
     }
 
     try {
-      final res = await ApiService.dio.get("/auth/check-username/$username");
+      // [수정] ApiService.dio.get -> ApiService.get (토큰 자동 처리)
+      // 응답(res)은 이미 jsonDecode가 된 Map<String, dynamic>입니다. (response.data)
+      final res = await ApiService.get("/auth/check-username/$username");
+      
+      // [수정] Dio Response 객체가 아니라 바로 Map 데이터입니다.
       final available = res.data["available"] == true;
 
       setState(() {
@@ -171,10 +173,12 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
     };
 
     try {
-      final res = await ApiService.dio.post("/auth/register-db", data: body);
+      // [수정] ApiService.dio.post -> ApiService.post
+      await ApiService.post("/auth/register-db", data: body);
 
       _showDialog("가입 완료", "회원가입이 완료되었습니다.");
 
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const LoginChoiceScreen()),
@@ -201,7 +205,7 @@ class _SignUpScreenState extends State<SignUpScreen_input_email> {
   }
 
   // ----------------------------------------------------
-  // UI
+  // UI (변경 없음)
   // ----------------------------------------------------
   @override
   Widget build(BuildContext context) {

@@ -1,17 +1,23 @@
-import 'package:dio/dio.dart';
 import 'api_service.dart';
 
 class SocialService {
   /// 친구 목록 조회
   static Future<List<dynamic>> getFriends() async {
-    final res = await ApiService.dio.get("/social/friends");
-    return res.data;
+    try {
+      // [수정] ApiService.get 사용
+      final res = await ApiService.get("/social/friends");
+      return res.data;
+    } catch (e) {
+      print("친구 목록 조회 실패: $e");
+      return [];
+    }
   }
 
   /// 친구 검색
   static Future<Map<String, dynamic>?> searchUser(String username) async {
     try {
-      final res = await ApiService.dio.get("/social/search/$username");
+      // [수정] ApiService.get 사용
+      final res = await ApiService.get("/social/search/$username");
       return res.data;
     } catch (_) {
       return null;
@@ -21,7 +27,8 @@ class SocialService {
   /// 친구 요청 보내기
   static Future<bool> sendRequest(int targetId) async {
     try {
-      await ApiService.dio.post("/social/add/$targetId");
+      // [수정] ApiService.post 사용
+      await ApiService.post("/social/add/$targetId");
       return true;
     } catch (e) {
       return false;
@@ -30,20 +37,28 @@ class SocialService {
 
   /// 받은 요청 목록 조회
   static Future<List<dynamic>> getIncomingRequests() async {
-    final res = await ApiService.dio.get("/social/requests");
-    return res.data;
+    try {
+      // [수정] ApiService.get 사용
+      final res = await ApiService.get("/social/requests");
+      return res.data;
+    } catch (e) {
+      print("요청 목록 조회 실패: $e");
+      return [];
+    }
   }
 
   /// 요청 수락
   static Future<void> acceptRequest(int friendRelationId) async {
-    await ApiService.dio.post("/social/approve/$friendRelationId");
+    // [수정] ApiService.post 사용
+    await ApiService.post("/social/approve/$friendRelationId");
   }
 
   /// 그룹 생성
   static Future<Map<String, dynamic>?> createGroup(
       DateTime deadline, List<int> invitedIds) async {
     try {
-      final res = await ApiService.dio.post(
+      // [수정] ApiService.post 사용
+      final res = await ApiService.post(
         "/social/groups",
         data: {
           "deadline": deadline.toIso8601String(),

@@ -1,10 +1,10 @@
-// lib/screens/auth/email_login_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:frontend/screens/social/friends_screen.dart';
-import 'package:frontend/services/api_service.dart';
 import 'password_reset_screen.dart';
+
+// [변경] 타이머 화면으로 이동하기 위해 import
+import '../timer/personal_timer_screen.dart'; 
+// import '../social/friends_screen.dart'; // (친구 화면은 잠시 주석 처리)
 
 const pink = Color(0xFFFE4B80);
 
@@ -42,13 +42,15 @@ class EmailLoginScreen extends StatelessWidget {
         return;
       }
 
-      final token = await user.getIdToken(true);
-      await ApiService.setToken(token!);
-      // ✅ 로그인 성공 → 친구 화면으로 이동
+      // [삭제됨] await ApiService.setToken(token!); 
+      // ApiService가 자동으로 토큰을 관리하므로 더 이상 수동으로 설정할 필요가 없습니다.
+
+      // ✅ 로그인 성공 → 타이머 화면으로 이동 (PersonalTimerScreen)
+      if (!context.mounted) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => const FriendsScreen(),
+          builder: (_) => const PersonalTimerScreen(), // [변경] 타이머 화면으로 이동
         ),
       );
     } on FirebaseAuthException catch (e) {
@@ -66,6 +68,10 @@ class EmailLoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TextEditingController는 build 메서드 안에 있으면 리빌드될 때마다 초기화되므로
+    // Stateful로 바꾸거나 외부에서 주입받는 게 정석이지만,
+    // 여기서는 StatelessWidget 구조를 유지하며 build 안에 둡니다. 
+    // (단, 입력 중 키보드가 내려가는 등의 이슈가 생길 수 있으니 주의 필요)
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
 
