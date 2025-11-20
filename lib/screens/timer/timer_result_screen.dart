@@ -161,7 +161,7 @@ class TimerResultScreen extends StatelessWidget {
   Widget _buildResultImage() {
     if (isSuccess) {
       return Positioned(
-        left: -67, top: 63, width: 419, height: 292,
+        right: 0, top: 63, width: 300, height: 292,
         child: Image.asset(
           'assets/images/timer_success.png',
           fit: BoxFit.contain,
@@ -170,7 +170,7 @@ class TimerResultScreen extends StatelessWidget {
       );
     } else {
       return Positioned(
-        left: 97, top: 134, width: 320, height: 222,
+        right: 20, top: 134, width: 250, height: 222,
         child: Image.asset(
           'assets/images/zeus_sad.png',
           fit: BoxFit.contain,

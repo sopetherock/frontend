@@ -59,8 +59,8 @@ class HomeDashboardScreen extends StatelessWidget {
                     left: -126,
                     top: 125,
                     child: Image.asset(
-                      'assets/images/home_background.png',
-                      width: 615,
+                      'assets/images/home_illust.png',
+                      width: 700,
                       height: 436,
                       fit: BoxFit.cover,
                     ),
