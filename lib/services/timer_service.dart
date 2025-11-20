@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/models/todo.dart';
 
 class TimerService {
   final storage = const FlutterSecureStorage();
@@ -82,4 +83,45 @@ class TimerService {
     }
     return 0; 
   }
+   // 4. 가장 마감이 임박한 TODO 가져오기
+Future<Todo?> fetchUrgentTodo() async {
+  try {
+    final token = await storage.read(key: 'accessToken');
+
+    final response = await http.get(
+      Uri.parse(_baseUrl),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('데이터 로드 실패: ${response.body}');
+    }
+
+    final data = jsonDecode(response.body);
+
+    final personalTimers = (data['personal'] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
+
+    if (personalTimers.isEmpty) {
+      return null;
+    }
+
+    // deadline 가장 가까운 todo 찾기
+    personalTimers.sort((a, b) {
+      final aDeadline = DateTime.parse(a['deadline']);
+      final bDeadline = DateTime.parse(b['deadline']);
+      return aDeadline.compareTo(bDeadline);
+    });
+
+    // ❗ Map을 Todo 객체로 변환
+    return Todo.fromJson(personalTimers.first);
+
+  } catch (e) {
+    print('UrgentTodo Error: $e');
+    throw Exception('긴급 TODO 조회 실패');
+  }
+}
 }

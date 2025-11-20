@@ -1,12 +1,11 @@
-// lib/services/api_service.dart
-
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ApiService {
   static final Dio dio = Dio(
     BaseOptions(
-      baseUrl: "http://localhost:3000/api", // ← 너희 서버 URL
+      baseUrl: "http://localhost:3000/api",
       connectTimeout: const Duration(seconds: 5),
       receiveTimeout: const Duration(seconds: 5),
     ),
@@ -21,7 +20,6 @@ class ApiService {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          // 토큰이 있으면 Authorization header 자동 추가
           if (_token != null) {
             options.headers["Authorization"] = "Bearer $_token";
           }
@@ -31,9 +29,14 @@ class ApiService {
     );
   }
 
-  /// Firebase Token을 저장하고 Dio가 자동으로 쓰도록 함
+  /// 🔥 friends_screen.dart 에서 사용하는 메서드 추가
   static Future<void> setToken(String token) async {
     _token = token;
-    init(); // ← interceptor 갱신
+  }
+
+  /// 토큰 제거가 필요하면 (선택)
+  static Future<void> clearToken() async {
+    _token = null;
   }
 }
+
