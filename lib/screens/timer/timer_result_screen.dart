@@ -163,7 +163,7 @@ class TimerResultScreen extends StatelessWidget {
       return Positioned(
         left: -67, top: 63, width: 419, height: 292,
         child: Image.asset(
-          'assets/images/artwork_success.png',
+          'assets/images/timer_success.png',
           fit: BoxFit.contain,
           errorBuilder: (c, o, s) => Container(), // 이미지 없으면 빈 공간
         ),
@@ -172,7 +172,7 @@ class TimerResultScreen extends StatelessWidget {
       return Positioned(
         left: 97, top: 134, width: 320, height: 222,
         child: Image.asset(
-          'assets/images/artwork_fail.png',
+          'assets/images/zeus_sad.png',
           fit: BoxFit.contain,
           errorBuilder: (c, o, s) => Container(), // 이미지 없으면 빈 공간
         ),

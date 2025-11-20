@@ -1,16 +1,36 @@
 import 'package:flutter/material.dart';
-import '../splash/splash_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../widgets/CustomBottomNavigationBar.dart';
-import '../../widgets/header.dart';
+import '../auth/login_choice_screen.dart';
 
 class MyPageScreen extends StatelessWidget {
   const MyPageScreen({super.key});
 
+  // 로그아웃 처리 함수
+  Future<void> _handleLogout(BuildContext context) async {
+    try {
+      const storage = FlutterSecureStorage();
+      await storage.delete(key: 'accessToken');
+      await FirebaseAuth.instance.signOut();
+
+      if (!context.mounted) return;
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginChoiceScreen()),
+        (route) => false,
+      );
+    } catch (e) {
+      print("로그아웃 에러: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('로그아웃 중 오류가 발생했습니다.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    const pink = Color(0xFFFE4B80);
-    const lightYellow = Color(0xFFFFED86);
-    const dividerColor = Color(0xFFF5F5F5);
+    final Color _primaryPink = const Color(0xFFFE4B80);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -159,110 +179,6 @@ class _GreyDivider extends StatelessWidget {
         color: color,
         border: Border.all(color: const Color(0xFFB6B6B6), width: 0.2),
       ),
-    );
-  }
-}
-
-/// 섹션 소제목 (알림 / 계정 / 정보)
-class _SectionTitle extends StatelessWidget {
-  final String title;
-  const _SectionTitle({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: Color(0xFF858585),
-        ),
-      ),
-    );
-  }
-}
-
-/// 설정 항목 한 줄 (텍스트 + 오른쪽 화살표)
-class _SettingRow extends StatelessWidget {
-  final String title;
-  const _SettingRow({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          color: Colors.black,
-        ),
-      ),
-      trailing: Container(
-        child: const Icon(
-          Icons.arrow_forward_ios,
-          size: 13,
-          color: Colors.black,
-        ),
-      ),
-      onTap: () {
-        // TODO: 각 항목별 네비게이션 연결
-      },
-    );
-  }
-}
-
-/// 로그아웃 항목 한 줄 (텍스트)
-
-class _LogoutRow extends StatelessWidget {
-  final String title;
-  const _LogoutRow({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          color: Colors.black,
-        ),
-      ),
-      onTap: () {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('로그아웃'),
-                content: const Text('정말 로그아웃 하시겠습니까?'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context); // 다이얼로그 닫기
-                    },
-                    child: const Text('취소'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const SplashScreen()),
-                      );
-                    },
-                    child: const Text(
-                      '로그아웃',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ),
-                ],
-              );
-            });
-      },
     );
   }
 }

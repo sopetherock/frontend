@@ -1,11 +1,11 @@
-// lib/screens/social/friends_screen.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:frontend/services/api_service.dart';
 import 'package:frontend/services/social_service.dart';
 import 'package:frontend/services/user_service.dart';
 
+// 커스텀 네비게이션 바
+import '../../widgets/CustomBottomNavigationBar.dart';
 import 'search_friend_screen.dart';
 import 'friend_request_screen.dart';
 
@@ -39,9 +39,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
         return;
       }
 
-      final token = await user.getIdToken(true);
-      await ApiService.setToken(token!);
-
+      // ApiService.setToken 제거됨 (자동 관리)
       await loadFriends();
     } catch (e) {
       setState(() => loading = false);
@@ -55,12 +53,14 @@ class _FriendsScreenState extends State<FriendsScreen> {
 
       final data = await SocialService.getFriends();
 
-      setState(() {
-        friends = data;
-        loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          friends = data;
+          loading = false;
+        });
+      }
     } catch (e) {
-      setState(() => loading = false);
+      if (mounted) setState(() => loading = false);
     }
   }
 
@@ -68,98 +68,131 @@ class _FriendsScreenState extends State<FriendsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
-      // ======================
-      //        상단 AppBar
-      // ======================
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: Navigator.canPop(context)
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back_ios, size: 20),
-                color: Colors.black,
-                onPressed: () => Navigator.pop(context),
-              )
-            : null,
-        centerTitle: true,
-        title: const Text(
-          "친구 목록",
-          style: TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 18,
-            fontWeight: FontWeight.w400,
-            color: Colors.black,
-          ),
-        ),
-      ),
-
-      // ======================
-      //        본문
-      // ======================
-      body: Column(
+      // [변경] Stack 구조로 변경하여 네비게이션 바 고정
+      body: Stack(
+        fit: StackFit.expand,
         children: [
-          // 🔍 검색창 (돋보기 아이콘 적용됨)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-            child: GestureDetector(
-              onTap: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => SearchFriendScreen()),
-                );
-                await loadFriends();
-              },
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF5F5F5),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+          // 1. 메인 콘텐츠 영역
+          Column(
+            children: [
+              // --- AppBar ---
+              Container(
+                height: 100,
+                color: Colors.white,
+                alignment: Alignment.bottomCenter,
+                padding: const EdgeInsets.only(bottom: 10),
                 child: Row(
-                  children: const [
-                    Icon(Icons.search, color: Color(0xFF666666), size: 20),
-                    SizedBox(width: 12),
-                    Text(
-                      "아이디로 친구 검색",
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // 뒤로가기 (네비게이터 스택이 있을 때만)
+                    Navigator.canPop(context)
+                        ? IconButton(
+                            icon: const Icon(Icons.arrow_back_ios, size: 20, color: Colors.black),
+                            onPressed: () => Navigator.pop(context),
+                          )
+                        : const SizedBox(width: 48),
+                    
+                    const Text(
+                      "친구 목록",
                       style: TextStyle(
                         fontFamily: 'Inter',
-                        fontSize: 15,
+                        fontSize: 18,
                         fontWeight: FontWeight.w400,
-                        color: Color(0xFF666666),
+                        color: Colors.black,
                       ),
                     ),
+                    
+                    const SizedBox(width: 48), // 타이틀 중앙 정렬용 더미
                   ],
                 ),
               ),
+
+              // --- 검색창 ---
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                child: GestureDetector(
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => SearchFriendScreen()),
+                    );
+                    await loadFriends();
+                  },
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF5F5F5),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: const [
+                        Icon(Icons.search, color: Color(0xFF666666), size: 20),
+                        SizedBox(width: 12),
+                        Text(
+                          "아이디로 친구 검색",
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xFF666666),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // --- 리스트 ---
+              Expanded(
+                child: loading
+                    ? const Center(child: CircularProgressIndicator())
+                    : friends.isEmpty
+                        ? _buildEmptyState()
+                        : _buildFriendsList(),
+              ),
+            ],
+          ),
+
+          // 2. 하단 네비게이션 바 (1번 탭 활성화)
+          const Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: CustomBottomNavigationBar(currentIndex: 1),
+          ),
+
+          // 3. 요청함 버튼 (Floating Action Button 대체)
+          Positioned(
+            right: 20,
+            bottom: 100, // 네비게이션 바 위로 띄움
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const FriendRequestScreen()),
+                );
+              },
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: _yellow,
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    )
+                  ],
+                ),
+                child: const Icon(Icons.mail, color: Colors.black),
+              ),
             ),
           ),
-
-          Expanded(
-            child: loading
-                ? const Center(child: CircularProgressIndicator())
-                : friends.isEmpty
-                    ? _buildEmptyState()
-                    : _buildFriendsList(),
-          ),
         ],
-      ),
-
-      // ======================
-      //      요청함 버튼 (노란색 고정)
-      // ======================
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: _yellow,
-        elevation: 3,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        child: const Icon(Icons.mail, color: Colors.black),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const FriendRequestScreen()),
-          );
-        },
       ),
     );
   }
@@ -171,7 +204,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // 이미지 오른쪽으로 padding 조정
         Padding(
           padding: const EdgeInsets.only(left: 40),
           child: SizedBox(
@@ -179,6 +211,10 @@ class _FriendsScreenState extends State<FriendsScreen> {
             child: Image.asset(
               'assets/images/zeus_sad.png',
               fit: BoxFit.contain,
+              errorBuilder: (c, o, s) => Container(
+                width: 100, height: 100, color: Colors.grey[200],
+                child: const Icon(Icons.image_not_supported),
+              ),
             ),
           ),
         ),
@@ -193,6 +229,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
             color: Colors.black,
           ),
         ),
+        const SizedBox(height: 80), // 하단바 가려짐 방지
       ],
     );
   }
@@ -202,7 +239,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
   /// ==============================
   Widget _buildFriendsList() {
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+      padding: const EdgeInsets.fromLTRB(18, 8, 18, 100), // 하단 여백 추가
       itemCount: friends.length,
       separatorBuilder: (_, __) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
@@ -224,7 +261,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                   color: index == 0 ? _pink : _lightPink,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.person, size: 20),
+                child: const Icon(Icons.person, size: 20, color: Colors.white),
               ),
               const SizedBox(width: 16),
 
@@ -238,7 +275,9 @@ class _FriendsScreenState extends State<FriendsScreen> {
               ),
 
               const Spacer(),
-              const Icon(Icons.add, size: 22, color: Colors.black),
+              // 친구 추가 아이콘은 의미가 모호할 수 있어 일단 유지하되,
+              // 이미 친구인 상태라면 채팅이나 프로필 보기 아이콘으로 바꾸는 게 좋습니다.
+              const Icon(Icons.navigate_next, size: 22, color: Colors.grey),
             ],
           ),
         );

@@ -5,6 +5,7 @@ import 'package:frontend/screens/timer/personal_timer_screen.dart';
 import 'package:frontend/screens/auth/login_choice_screen.dart';
 import 'package:frontend/screens/social/friends_screen.dart';
 
+
 class AppRoot extends StatelessWidget {
   const AppRoot({super.key});
 
