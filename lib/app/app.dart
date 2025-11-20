@@ -1,6 +1,7 @@
 // lib/app/app.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:frontend/screens/timer/personal_timer_screen.dart';
 import 'package:frontend/screens/auth/login_choice_screen.dart';
 import 'package:frontend/screens/social/friends_screen.dart';
 
@@ -12,7 +13,6 @@ class AppRoot extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        // 로딩 스피너
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
@@ -20,13 +20,12 @@ class AppRoot extends StatelessWidget {
         }
 
         final user = snapshot.data;
+
         if (user != null && user.emailVerified) {
-          // ✅ 자동 로그인 상태
-          return const FriendsScreen();
-        } else {
-          // ❌ 비로그인 / 미인증 → 로그인 선택 화면
-          return const LoginChoiceScreen();
+          return PersonalTimerScreen(); // 자동 로그인
         }
+
+        return const LoginChoiceScreen(); // 로그인/회원가입 화면
       },
     );
   }

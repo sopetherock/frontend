@@ -23,6 +23,7 @@ dependencies:
   flutter_local_notifications: ^17.1.2 # 로컬 알림 처리 (앱 포그라운드 시 알림 표시용)
   firebase_auth: ^4.17.9        # 인증 토큰 획득 시 필요
   http: ^1.1.2                    # HTTP 클라이언트 (ApiService 사용)
+  flutter_secure_storage: ^9.2.4
 
 dev_dependencies:
   flutter_test:
@@ -46,6 +47,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/fonts/
+    - assets/images/
 
   fonts:
     - family: Pretendard
@@ -88,18 +90,3 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
 
-  assets:
-    - assets/fonts/
-    - .env
-    - assets/images/
-
-  fonts:
-    - family: Pretendard
-      fonts:
-        - asset: assets/fonts/Pretendard-Medium.otf
-        - asset: assets/fonts/Pretendard-Bold.otf
-          weight: 700
-
-    - family: Modulus
-      fonts:
-        - asset: assets/fonts/Modulus.ttf
