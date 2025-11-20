@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../screens/mypage/mypage_screen.dart'; // ← MyPageScreen 경로 맞게 수정!
+import '../screens/social/friends_screen.dart'; // ← FriendsScreen 경로 맞게 수정!
+import '../screens/home/home_screen.dart'; // ← HomeDashboardScreen 경로 맞게 수정!
+import '../screens/timer/personal_timer_screen.dart'; // ← PersonalTimerScreen 경로 맞게 수정!
 
 const pink = Color(0xFFFE4B80);
 
@@ -20,16 +23,24 @@ class CustomBottomNavigationBar extends StatelessWidget {
       onTap: (index) {
         switch (index) {
           case 0: // 홈
-            Navigator.pushReplacementNamed(context, '/home');
-            break;
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const HomeDashboardScreen()),
+            );
 
           case 1: // 친구
-            Navigator.pushReplacementNamed(context, '/friends');
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const FriendsScreen()),
+            );
             break;
 
-          case 2: // 타이머
-            Navigator.pushReplacementNamed(context, '/timer');
-            break;
+          // case 2: // 타이머
+          /* Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const PersonalTimerScreen()),
+            );
+            break; */
 
           case 3: // 마이페이지
             Navigator.pushReplacement(
