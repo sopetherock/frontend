@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '../screens/mypage/mypage_screen.dart'; // ← MyPageScreen 경로 맞게 수정!
+import '../screens/social/friends_screen.dart'; // ← FriendsScreen 경로 맞게 수정!
+import '../screens/home/home_screen.dart'; // ← HomeDashboardScreen 경로 맞게 수정!
+import '../screens/timer/personal_timer_screen.dart'; // ← PersonalTimerScreen 경로 맞게 수정!
 
 // 1. 이동할 화면들 임포트 (경로가 맞는지 확인해주세요)
 import '../screens/home/home_screen.dart';           // 홈 (0번)
