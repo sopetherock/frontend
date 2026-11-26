@@ -63,7 +63,7 @@ class SignUpChoiceScreen extends StatelessWidget {
 
             const SizedBox(height: 100),
 
-            // 이메일 / 카카오 버튼
+            // 이메일 시작 버튼
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 27),
               child: Column(
@@ -89,33 +89,6 @@ class SignUpChoiceScreen extends StatelessWidget {
                       ),
                       child: const Text(
                         '이메일로 시작하기',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        // TODO: 카카오톡 로그인 플로우
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFFD3D3D3)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        backgroundColor: Colors.white,
-                        elevation: 0,
-                      ),
-                      child: const Text(
-                        '카카오톡으로 시작하기',
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 16,
