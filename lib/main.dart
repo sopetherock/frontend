@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -69,14 +70,17 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // 알림 채널 생성
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
+  // 웹에서는 로컬 알림 채널/백그라운드 FCM 핸들러를 지원하지 않으므로 건너뜀
+  if (!kIsWeb) {
+    // 알림 채널 생성
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
 
-  // 백그라운드 알림 핸들러 등록
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    // 백그라운드 알림 핸들러 등록
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  }
 
   // API 서비스 초기화 (토큰 자동 주입)
   ApiService.init();

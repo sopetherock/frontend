@@ -1,3 +1,4 @@
+import '../config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
@@ -37,7 +38,7 @@ class FCMService {
     }
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3000/api/fcm/token'), // 백엔드 토큰 저장 API 엔드포인트
+        Uri.parse('$kApiBase/fcm/token'), // 백엔드 토큰 저장 API 엔드포인트
         headers: {
           'Content-Type': 'application/json',
           // Authorization 헤더에 Bearer 스킴과 ID Token 포함 (Postman 설정과 동일)

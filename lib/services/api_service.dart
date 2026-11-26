@@ -1,3 +1,4 @@
+import '../config.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -7,9 +8,9 @@ class ApiService {
     BaseOptions(
       // 주의: 안드로이드 에뮬레이터는 'http://10.0.2.2:3000/api' 사용
       // iOS 시뮬레이터/웹은 'http://localhost:3000/api'
-      baseUrl: "http://localhost:3000/api", 
-      connectTimeout: const Duration(seconds: 5),
-      receiveTimeout: const Duration(seconds: 5),
+      baseUrl: kApiBase,
+      connectTimeout: const Duration(seconds: 20),
+      receiveTimeout: const Duration(seconds: 20),
       contentType: Headers.jsonContentType,
     ),
   );
